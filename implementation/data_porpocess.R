@@ -1,4 +1,4 @@
-out.save.dir <- "~/niagara/med826/Microbiome_classification/github/implementation/"
+out.save.dir <- "~/niagara/med826/Microbiome_classification/implementation/"
 
 cancer_data <- read.table(paste0(out.save.dir, "otutable.txt"), header = T)
 
