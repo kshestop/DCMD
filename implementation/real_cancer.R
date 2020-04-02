@@ -27,14 +27,14 @@ library(cluster)
 library(FastKNN)
 library(pamr)
 
-path <- "~/niagara/med826/Microbiome_classification/github/"
+path <- "~/niagara/med826/Microbiome_classification/"
 
 source(paste0(path, 'scinet_part3_ex_fns_v1.r'))
 source(paste0(path, 'scinet_part2_new_function_v1.r'))
 source(paste0(path, 'scinet_estim_functions_v1.r'))
 source(paste0(path, "utilities.R"))
 
-out.save.dir <- "~/niagara/med826/Microbiome_classification/github/implementation/"
+out.save.dir <- "~/niagara/med826/Microbiome_classification/implementation/"
 
 boot.save.dir <- paste0(path, "bootstrap/")
 if (!exists(boot.save.dir)) dir.create(boot.save.dir, showWarnings = F)
