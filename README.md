@@ -1,13 +1,12 @@
 # DCMD
 
 ## Data process
-To apply DCMD to a real microbiome data, /implementation/data_propocess.R is used to propocess the raw data and generate the training and test set. 
+implementation/data_propocess.R is used to propocess the raw data and generate the training and test set. 
 
-## Run and comparison
-Run /implementation/real_cancer.R for one fold.
+## Implementation
+To implemente DCMD to real data, run implementation/real_cancer.R for one fold.
 
-To run 10 fold parallel in a cluster, you can submit /implementation/realdata_submit.sh
-
+To run 10 fold parallel, submit /implementation/realdata_submit.sh in the cluster.
 
 # DCMD: Distance-based Classification Using Mixture Distributions on Microbiome Data
 
