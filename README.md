@@ -6,7 +6,7 @@ implementation/data_propocess.R is used to propocess the raw data and generate t
 ## Implementation
 To implemente DCMD to real data, run implementation/real_cancer.R for one fold.
 
-To run 10 fold parallel, submit /implementation/realdata_submit.sh in the cluster.
+To run 10-fold CV in parallel, submit /implementation/realdata_submit.sh in the cluster.
 
 # DCMD: Distance-based Classification Using Mixture Distributions on Microbiome Data
 
