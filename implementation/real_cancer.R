@@ -3,8 +3,12 @@
 # for(k in 1:length(args)){
 #   eval(parse(text=args[[k]]))
 # }
+##uncomment above when you submit in the cluster
+
 
 fold <- 1
+##comment above when you submit in the cluster
+
 
 n.dir.rep <- 300 #number of boostrap replicates
 
@@ -257,6 +261,7 @@ er_knn_mht <- knn_mht$er
 print(Sys.time() - t.t1)
 
 
+##compare with other methods
 fit_formula <- as.formula(paste0("label", "~", paste(paste0("OTU", 1:n.gen), collapse = "+")))
 
 ### random forest
