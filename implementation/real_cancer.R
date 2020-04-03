@@ -197,17 +197,14 @@ for (jj in 1:n.select) {
   model.fit.init.fn <- paste0(f.dir, '/model_train_fit_otu_iteration', jj, '.RData')
   load(model.fit.init.fn)
   dist.mat.array.sum[,,1] <- dist.mat.array.sum[,,1] + dist.mat.array[,,1] #discrete pdf
-  dist.mat.array.sum[,,2] <- dist.mat.array.sum[,,2] + dist.mat.array[,,2] #discrete cdf
-  dist.mat.array.sum[,,3] <- dist.mat.array.sum[,,3] + dist.mat.array[,,3] #cont cdf
+  dist.mat.array.sum[,,2] <- dist.mat.array.sum[,,2] + dist.mat.array[,,2] #cont cdf
   
   dist.mat.med.sum[,,1] <- dist.mat.med.sum[,,1] + med.store.array[,,1]
   dist.mat.med.sum[,,2] <- dist.mat.med.sum[,,2] + med.store.array[,,2]
-  dist.mat.med.sum[,,3] <- dist.mat.med.sum[,,3] + med.store.array[,,3]
 }
 
 predict_pdf <- apply(dist.mat.med.sum[test.set.idx2,,1], 1, which.min)
-predict_cdf <- apply(dist.mat.med.sum[test.set.idx2,,2], 1, which.min)
-predict_con <- apply(dist.mat.med.sum[test.set.idx2,,3], 1, which.min) 
+predict_con <- apply(dist.mat.med.sum[test.set.idx2,,2], 1, which.min) 
 
 gen.data.array.new <- data.frame(gen.data.array, as.factor(cls.sample))
 colnames(gen.data.array.new) <- c(paste0("OTU", 1:n.gen),"label")
@@ -220,10 +217,8 @@ cls.sample[test.set.idx2]
 
 er_kmeans_m1 <- mean(predict_pdf != test_label)
 er_kmeans_m1
-er_kmeans_m2 <- mean(predict_cdf != test_label)
+er_kmeans_m2 <- mean(predict_con != test_label)
 er_kmeans_m2
-er_kmeans_m3 <- mean(predict_con != test_label)
-er_kmeans_m3
 
 ##find the medoid and calculate the distance of each point to the class medoid.
 med.store.array <- array(0, dim=c(n.obs, length(cls.names), 2)) ##store all the dataset to the class medoid
@@ -249,17 +244,14 @@ size=length(train.set.idx)
 t.t1 <- Sys.time()
 knn_m1 <- knn_fit(dist.mat.array.sum[,,1], training, test, n.gen)
 knn_m2 <- knn_fit(dist.mat.array.sum[,,2], training, test, n.gen)
-knn_m3 <- knn_fit(dist.mat.array.sum[,,3], training, test, n.gen)
 knn_eucl <- knn_fit(dist.mat.array.eucl, training, test, n.gen)
 knn_mht <- knn_fit(dist.mat.array.mht, training, test, n.gen)
 pred_knn_m1 <- knn_m1$prediction
 pred_knn_m2 <- knn_m2$prediction
-pred_knn_m3 <- knn_m3$prediction
 pred_knn_eucl <- knn_eucl$prediction
 pred_knn_mht <- knn_mht$prediction
 er_knn_m1 <- knn_m1$er
 er_knn_m2 <- knn_m2$er
-er_knn_m3 <- knn_m3$er
 er_knn_eucl <- knn_eucl$er
 er_knn_mht <- knn_mht$er
 print(Sys.time() - t.t1)
@@ -345,13 +337,13 @@ pamr.pred <- pamr.predict(pamr.fit, test.x, threshold=0, type = "class")
 pamr.er <- mean(pamr.pred != test.y)
 
 
-save.er <- cbind(er_kmeans_pdf=er_kmeans_m1, er_kmeans_cdf=er_kmeans_m2, er_kmeans_con=er_kmeans_m3, er_kmeans_eucl=er_kmeans_eucl, er_kmeans_mht=er_kmeans_mht,
-                 er_knn_pdf=er_knn_m1, er_knn_cdf=er_knn_m2, er_knn_con=er_knn_m3, er_knn_eucl=er_knn_eucl, er_knn_mht=er_knn_mht,
+save.er <- cbind(er_kmeans_pdf=er_kmeans_m1, er_kmeans_con=er_kmeans_m2, er_kmeans_eucl=er_kmeans_eucl, er_kmeans_mht=er_kmeans_mht,
+                 er_knn_pdf=er_knn_m1, er_knn_con=er_knn_m2, er_knn_eucl=er_knn_eucl, er_knn_mht=er_knn_mht,
                  er_rf=er_rf, er_gb=er_gb, er_lasso1=er_lasso1, er_lasso2=er_lasso2, er_ridge1=er_ridge1, er_ridge2=er_ridge2, pamr.er=pamr.er)
 
 save.er
 
-save.list <- list(predict_kmeans=cbind(predict_pdf,predict_cdf,predict_con,pred_kmeans_eucl, pred_kmeans_mht), predict_knn=cbind(pred_knn_m1,pred_knn_m2,pred_knn_m3,pred_knn_eucl,pred_knn_mht),
+save.list <- list(predict_kmeans=cbind(predict_pdf,predict_con,pred_kmeans_eucl, pred_kmeans_mht), predict_knn=cbind(pred_knn_m1,pred_knn_m2,pred_knn_eucl,pred_knn_mht),
                   predict_rf=predict_rf, predict_gb=predict_gb, lasso_fit1=lasso_fit1, lasso_fit2=lasso_fit2, ridge_fit1=ridge_fit1, ridge_fit2=ridge_fit2, pamr.pred=pamr.pred, test.set.idx=test.set.idx2, test_label=test_label, save.er)
 save(save.list, file=paste0(out.save.dir, "predict_fold", fold, ".RData"))
 
