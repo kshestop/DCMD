@@ -185,10 +185,6 @@ for (cls.idx in 1:length(cls.names)) {
 	comp.array[,,2] <- mix.med$pdf[rep(1, dim(wts.all.sub)[1]),]
 	l2d.pdf.med <- apply((comp.array[,,1] - comp.array[,,2])^2, 1, sum)
 
-	comp.array <- array(0, dim=c(dim(wts.all.sub)[1], dim(true.mix.prob.cdf)[2], 2))
-	comp.array[,,1] <- true.mix.prob.cdf
-	comp.array[,,2] <- mix.med$cdf[rep(1, dim(wts.all.sub)[1]),]
-	l2d.cdf.med <- apply((comp.array[,,1] - comp.array[,,2])^2, 1, sum)
 
 	g.mat <- gen.g.mat(wts.all.sub, model.mix.all, count.cut)
 	comp.array <- array(0, dim=c(dim(wts.all.sub)[1], dim(wts.all.sub)[2], 2))
@@ -196,8 +192,7 @@ for (cls.idx in 1:length(cls.names)) {
 	comp.array[,,2] <- (matrix(class.med.est, 1, length(class.med.est)))[rep(1, dim(wts.all.sub)[1]),]
 	l2c.cdf.med <- sapply(1:dim(comp.array)[1], function(x){wts1 <- comp.array[x,,1]; wts2 <- comp.array[x,,2]; return(t(wts1-wts2)%*%g.mat%*%(wts1-wts2))})
 	med.store.array[,cls.idx,1] <- l2d.pdf.med
-	med.store.array[,cls.idx,2] <- l2d.cdf.med
-	med.store.array[,cls.idx,3] <- l2c.cdf.med
+	med.store.array[,cls.idx,2] <- l2c.cdf.med
 }
 
 #####################
@@ -220,25 +215,6 @@ for (k.indx in 1:mx.k) {
 dist.mat.array[,,1] <- dist.calc.pw.mat
 print(Sys.time() - t.t1)
 
-######################
-#L2-Descrete CDF Norm:
-t.t1 <- Sys.time()
-dist.calc.pw.mat <- array(0, dim=c(dim(dat.run.dist)[1], dim(dat.run.dist)[1]))
-mx.k <- ceiling(exp(log(dim(true.mix.prob.cdf)[2]) + log(dim(matrix.rc.list)[1]) - log(7e+7))) #about 1Gb blocks
-iter.blk <- ceiling(dim(matrix.rc.list)[1]/mx.k)
-for (k.indx in 1:mx.k) {
-	if (k.indx == mx.k) {
-		idx.st <- (k.indx-1)*iter.blk+1; idx.en <- dim(matrix.rc.list)[1]; tot.idx <- idx.en - idx.st + 1
-	} else {
-		idx.st <- (k.indx-1)*iter.blk+1; idx.en <- k.indx*iter.blk; tot.idx <- idx.en - idx.st + 1
-	}
-	comp.array <- array(0, dim=c(tot.idx, dim(true.mix.prob.cdf)[2], 2))
-	comp.array[,,1] <- true.mix.prob.cdf[matrix.rc.list[idx.st:idx.en,1],]
-	comp.array[,,2] <- true.mix.prob.cdf[matrix.rc.list[idx.st:idx.en,2],]
-	dist.calc.pw.mat[matrix.rc.list[idx.st:idx.en,]] <- apply((comp.array[,,1] - comp.array[,,2])^2, 1, sum)
-}
-dist.mat.array[,,2] <- dist.calc.pw.mat
-print(Sys.time() - t.t1)
 
 #L2-Continous CDF Distance
 t.t1 <- Sys.time()
