@@ -30,6 +30,7 @@ library(gbm)
 library(cluster)
 library(FastKNN)
 library(pamr)
+library(naivebayes)
 
 path <- "~/niagara/med826/Microbiome_classification/"
 
