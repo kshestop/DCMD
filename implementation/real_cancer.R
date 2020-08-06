@@ -342,14 +342,34 @@ pamr.pred <- pamr.predict(pamr.fit, test.x, threshold=0, type = "class")
 pamr.er <- mean(pamr.pred != test.y)
 
 
+train.x2 <- gen.data.array[train.set.idx,]
+train.y2 <- factor(cls.sample[train.set.idx])
+
+test.x2 <- gen.data.array[test.set.idx2,]
+test.y2 <- factor(cls.sample[test.set.idx2])
+
+training2 <- data.frame(x=train.x2, y=train.y2)
+testing2 <- data.frame(x=test.x2, y=test.y2)
+trControl <- trainControl(method = "cv", number = 10, search = "grid")
+svmfit <- train(y~., data=training2, method="svmLinear", trControl = trControl,  preProcess = c("center","scale"))
+svm.predict <- predict(svmfit, testing2)
+er.svm=mean(svm.predict != test.y2)
+
+
+nb <- multinomial_naive_bayes(x=train.x2, y=train.y2)
+nb.predict <- predict(nb, test.x2)
+er.nb=mean(nb.predict != test.y2)
+
+
 save.er <- cbind(er_kmeans_pdf=er_kmeans_m1, er_kmeans_con=er_kmeans_m2, er_kmeans_eucl=er_kmeans_eucl, er_kmeans_mht=er_kmeans_mht,
-                 er_knn_pdf=er_knn_m1, er_knn_con=er_knn_m2, er_knn_eucl=er_knn_eucl, er_knn_mht=er_knn_mht,
-                 er_rf=er_rf, er_gb=er_gb, er_lasso1=er_lasso1, er_lasso2=er_lasso2, er_ridge1=er_ridge1, er_ridge2=er_ridge2, pamr.er=pamr.er)
+                 er_knn_pdf=er_knn_m1, er_knn_cdf=er_knn_m2, er_knn_con=er_knn_m3, er_knn_eucl=er_knn_eucl, er_knn_mht=er_knn_mht,
+                 er_rf=er_rf, er_gb=er_gb, er_lasso1=er_lasso1, er_lasso2=er_lasso2, er_ridge1=er_ridge1, er_ridge2=er_ridge2, pamr.er=pamr.er,er_svm=er.svm, er_nb=er.nb)
 
 save.er
 
-save.list <- list(predict_kmeans=cbind(predict_pdf,predict_con,pred_kmeans_eucl, pred_kmeans_mht), predict_knn=cbind(pred_knn_m1,pred_knn_m2,pred_knn_eucl,pred_knn_mht),
-                  predict_rf=predict_rf, predict_gb=predict_gb, lasso_fit1=lasso_fit1, lasso_fit2=lasso_fit2, ridge_fit1=ridge_fit1, ridge_fit2=ridge_fit2, pamr.pred=pamr.pred, test.set.idx=test.set.idx2, test_label=test_label, save.er)
+save.list <- list(predict_kmeans=cbind(predict_pdf,predict_con,pred_kmeans_eucl, pred_kmeans_mht),
+                  predict_knn=cbind(pred_knn_m1,pred_knn_m2,pred_knn_m3,pred_knn_eucl,pred_knn_mht),
+                  predict_rf=predict_rf, predict_gb=predict_gb, lasso_fit1=lasso_fit1, lasso_fit2=lasso_fit2, ridge_fit1=ridge_fit1, ridge_fit2=ridge_fit2,  pamr.pred=pamr.pred, predict_svm=svm.predict, predict_nb=nb.predict, test.set.idx=test.set.idx2, test_label=test_label, save.er)
 save(save.list, file=paste0(out.save.dir, "predict_fold", fold, ".RData"))
 
 
