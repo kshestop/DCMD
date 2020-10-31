@@ -9,10 +9,9 @@
 fold <- 1
 ##comment above when you submit in the cluster
 
-
 n.dir.rep <- 300 #number of boostrap replicates
 
-
+##load neceassary packages
 library(nloptr)
 library(doMC)
 registerDoMC(cores=40)
@@ -32,14 +31,14 @@ library(FastKNN)
 library(pamr)
 library(naivebayes)
 
+##set up path and save path
 path <- "~/niagara/med826/Microbiome_classification/"
+out.save.dir <- "~/niagara/med826/Microbiome_classification/implementation/"
 
 source(paste0(path, 'scinet_part3_ex_fns_v1.r'))
 source(paste0(path, 'scinet_part2_new_function_v1.r'))
 source(paste0(path, 'scinet_estim_functions_v1.r'))
 source(paste0(path, "utilities.R"))
-
-out.save.dir <- "~/niagara/med826/Microbiome_classification/implementation/"
 
 boot.save.dir <- paste0(path, "bootstrap/")
 if (!exists(boot.save.dir)) dir.create(boot.save.dir, showWarnings = F)
@@ -357,20 +356,17 @@ svm.predict <- predict(svmfit, testing2)
 er.svm=mean(svm.predict != test.y2)
 
 
-nb <- multinomial_naive_bayes(x=train.x2, y=train.y2)
-nb.predict <- predict(nb, test.x2)
-er.nb=mean(nb.predict != test.y2)
 
 
 save.er <- cbind(er_kmeans_pdf=er_kmeans_m1, er_kmeans_con=er_kmeans_m2, er_kmeans_eucl=er_kmeans_eucl, er_kmeans_mht=er_kmeans_mht,
                  er_knn_pdf=er_knn_m1, er_knn_cdf=er_knn_m2, er_knn_con=er_knn_m3, er_knn_eucl=er_knn_eucl, er_knn_mht=er_knn_mht,
-                 er_rf=er_rf, er_gb=er_gb, er_lasso1=er_lasso1, er_lasso2=er_lasso2, er_ridge1=er_ridge1, er_ridge2=er_ridge2, pamr.er=pamr.er,er_svm=er.svm, er_nb=er.nb)
+                 er_rf=er_rf, er_gb=er_gb, er_lasso1=er_lasso1, er_lasso2=er_lasso2, er_ridge1=er_ridge1, er_ridge2=er_ridge2, pamr.er=pamr.er,er_svm=er.svm)
 
 save.er
 
 save.list <- list(predict_kmeans=cbind(predict_pdf,predict_con,pred_kmeans_eucl, pred_kmeans_mht),
                   predict_knn=cbind(pred_knn_m1,pred_knn_m2,pred_knn_m3,pred_knn_eucl,pred_knn_mht),
-                  predict_rf=predict_rf, predict_gb=predict_gb, lasso_fit1=lasso_fit1, lasso_fit2=lasso_fit2, ridge_fit1=ridge_fit1, ridge_fit2=ridge_fit2,  pamr.pred=pamr.pred, predict_svm=svm.predict, predict_nb=nb.predict, test.set.idx=test.set.idx2, test_label=test_label, save.er)
+                  predict_rf=predict_rf, predict_gb=predict_gb, lasso_fit1=lasso_fit1, lasso_fit2=lasso_fit2, ridge_fit1=ridge_fit1, ridge_fit2=ridge_fit2,  pamr.pred=pamr.pred, predict_svm=svm.predict,test.set.idx=test.set.idx2, test_label=test_label, save.er)
 save(save.list, file=paste0(out.save.dir, "predict_fold", fold, ".RData"))
 
 
