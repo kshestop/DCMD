@@ -4,7 +4,7 @@
 implementation/data_propocess.R is used to propocess the raw data and generate the training and test set. 
 
 ## Implementation
-To implement DCMD to real data, run implementation/real_cancer.R for one fold.
+To implement DCMD to real data, run implementation/real_cancer.R for one fold. You will need to change the path to the path of your data and change out.save.dir according to the path you want to save your file.
 
 To run 10-fold CV in parallel, submit /implementation/realdata_submit.sh in the cluster.
 
